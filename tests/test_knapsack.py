@@ -10,6 +10,10 @@ def test_knapsack_initializes_with_capacity():
     Knapsack(capacity=3)
 
 
+def test_knapsack_initializes_with_everything():
+    Knapsack(capacity=3, weights=[1, 2, 3], values=[5, 6, 7])
+
+
 def test_adding_variables():
     bip = Knapsack(capacity=3)
     bip.add_var(Var(),
@@ -22,6 +26,13 @@ def test_solving_trivial_problem():
     bip.add_var(Var(),
                weight=1,
                value=1)
+    bip.solve()
+    assert bip.variables[0].value == 1
+    assert bip.optimal_value == 1
+
+
+def test_solving_trivial_problem_alt_init():
+    bip = Knapsack(capacity=3, weights=[1], values=[1])
     bip.solve()
     assert bip.variables[0].value == 1
     assert bip.optimal_value == 1

@@ -1,6 +1,8 @@
 from functools import lru_cache
 import numpy as np
 
+from .variables import Var
+
 
 def _knapsack_table(weights, values, capacity, offset=0):
     """Classic DP solution to the Knapsack problem.  Assumes weights are
@@ -38,12 +40,19 @@ def _knapsack_solution(lookup, weights):
 
 class Knapsack(object):
 
-    def __init__(self, capacity=None):
+    def __init__(self, capacity=None, weights=None, values=None):
         self.capacity = capacity
         self.variables = []
+        self.offset = 0
+        if ((weights is not None and values is None) or
+            (values is not None and weights is None)):
+            raise ValueError('Both weights and values must be provided!')
+
         self.weights = []
         self.values = []
-        self.offset = 0
+        if weights is not None:
+            for weight, value in zip(weights, values):
+                self.add_var(Var(), weight, value)
 
     def add_var(self, variable, weight, value):
         is_pos = weight >= 0
