@@ -49,3 +49,35 @@ def test_solving_nontrivial_two_var_problem():
     bip.solve()
     assert bip.variables[0].value == 0
     assert bip.variables[1].value == 1
+
+
+def test_solving_two_var_problem_with_negative_weights():
+    bip = Knapsack(capacity=3)
+    bip.addVar(Var(),
+               weight=-4,
+               value=5)
+    bip.addVar(Var(),
+               weight=1,
+               value=1)
+    bip.solve()
+    assert bip.variables[0].value == 1
+    assert bip.variables[1].value == 1
+
+
+def test_solving_nontrivial_four_var_problem():
+    bip = Knapsack(capacity=14)
+    bip.addVar(Var(),
+               weight=5,
+               value=8)
+    bip.addVar(Var(),
+               weight=7,
+               value=11)
+    bip.addVar(Var(),
+               weight=4,
+               value=6)
+    bip.addVar(Var(),
+               weight=3,
+               value=4)
+    bip.solve()
+    values = [v.value for v in bip.variables]
+    assert values == [0, 1, 1, 1]
