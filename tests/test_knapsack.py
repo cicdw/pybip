@@ -98,3 +98,21 @@ def test_solving_nontrivial_eight_var_problem():
     values = [v.value for v in bip.variables]
     assert values == [1, 0, 1, 1, 1, 0, 1, 1]
     assert bip.optimal_value == 900
+
+
+def test_knapsack_with_negative_values():
+    bip = Knapsack(capacity=10)
+    bip.add_var(Var(), weight=4, value=-2)
+    bip.add_var(Var(), weight=20, value=5)
+    bip.solve()
+    assert [v.value for v in bip.variables] == [1, 0]
+    assert bip.optimal_value == -2
+
+
+def test_knapsack_with_negative_values_neg_weights():
+    bip = Knapsack(capacity=10)
+    bip.add_var(Var(), weight=15, value=-2)
+    bip.add_var(Var(), weight=-5, value=5)
+    bip.solve()
+    assert [v.value for v in bip.variables] == [1, 1]
+    assert bip.optimal_value == 3
