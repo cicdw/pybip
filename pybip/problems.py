@@ -5,16 +5,22 @@ import numpy as np
 def _knapsack_table(weights, values, capacity):
     """Classic DP solution to the Knapsack problem.  Assumes weights are
     strictly positive integers.
+
+    Returns a table satisfying table[i, j] = max possible value
+    of first i items under the weight constraint total(weight) <= j + 1
     """
     n = len(values)
-    lookup = np.zeros((n + 1, capacity))
-    for i in range(1, n + 1):
-        for j in range(capacity):
-            prev_val = lookup[i - 1, j]
-            if weights[i - 1] > j:
-                lookup[i, j] = prev_val
+    lookup = np.zeros((n + 1, capacity + 1))
+
+    for item_idx in range(1, n + 1):
+        for lim in range(capacity + 1):
+            prev_val = lookup[item_idx - 1, lim]
+            if weights[item_idx - 1] > lim:
+                lookup[item_idx, lim] = prev_val
             else:
-                lookup[i, j] = max(prev_val, lookup[i - 1, j - weights[i - 1]] + values[i - 1])
+                lookup[item_idx, lim] = max(prev_val,
+                                            lookup[item_idx - 1, lim - weights[item_idx - 1]] + values[item_idx - 1])
+
     return lookup
 
 
@@ -39,8 +45,8 @@ class Knapsack(object):
         self.values = []
 
     def addVar(self, variable, weight, value):
-        self.variables.append(variable)
-        self.weights.append(weight)
+        self.variables.append(variable if weight >= 0 else 1 - variable)
+        self.weights.append(weight if weight >= 0 else -weight)
         self.values.append(value)
 
     def solve(self):
