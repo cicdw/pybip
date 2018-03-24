@@ -16,13 +16,13 @@ class Var(object):
     def __add__(self, other):
         if self.value is not None:
             return self.value + other
-        transform = lambda x: x + other
+        transform = lambda x: x - other
         return Var(parent=(self, transform))
 
     def __radd__(self, other):
         if self.value is not None:
             return self.value + other
-        transform = lambda x: x + other
+        transform = lambda x: x - other
         return Var(parent=(self, transform))
 
     def __mul__(self, other):

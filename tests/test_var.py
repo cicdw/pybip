@@ -57,3 +57,13 @@ def test_multiplication_and_subtraction_together():
     y = 1 - x
     y.set_value(1)
     assert 3 * y == 3
+
+
+def test_downstream_variable_setting():
+    x = Var()
+    y = 5 - 2 * x
+    z = y + 4
+    z.set_value(10)
+    assert z.value == 10
+    assert y.value == 6
+    assert x.value == -0.5
