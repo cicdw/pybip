@@ -11,10 +11,38 @@ class Var(object):
         else:
             self.value = val
 
+    def __add__(self, other):
+        if self.value is not None:
+            return self.value + other
+        self.transform = lambda x: x + other
+        return self
+
+    def __radd__(self, other):
+        if self.value is not None:
+            return self.value + other
+        self.transform = lambda x: x + other
+        return self
+
+    def __mul__(self, other):
+        if self.value is not None:
+            return self.value * other
+        self.transform = lambda x: x / other
+        return self
+
+    def __rmul__(self, other):
+        if self.value is not None:
+            return self.value * other
+        self.transform = lambda x: x / other
+        return self
+
     def __rsub__(self, other):
+        if self.value is not None:
+            return other - self.value
         self.transform = lambda x: other - x
         return self
 
     def __sub__(self, other):
+        if self.value is not None:
+            return self.value - other
         self.transform = lambda x: x + other
         return self

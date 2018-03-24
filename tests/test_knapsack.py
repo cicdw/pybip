@@ -24,6 +24,7 @@ def test_solving_trivial_problem():
                value=1)
     bip.solve()
     assert bip.variables[0].value == 1
+    assert bip.optimal_value == 1
 
 
 def test_solving_trivial_two_var_problem():
@@ -36,6 +37,7 @@ def test_solving_trivial_two_var_problem():
                value=1)
     bip.solve()
     assert all([v.value == 1 for v in bip.variables])
+    assert bip.optimal_value == 2
 
 
 def test_solving_nontrivial_two_var_problem():
@@ -49,6 +51,7 @@ def test_solving_nontrivial_two_var_problem():
     bip.solve()
     assert bip.variables[0].value == 0
     assert bip.variables[1].value == 1
+    assert bip.optimal_value == 1
 
 
 def test_solving_two_var_problem_with_negative_weights():
@@ -62,6 +65,7 @@ def test_solving_two_var_problem_with_negative_weights():
     bip.solve()
     assert bip.variables[0].value == 1
     assert bip.variables[1].value == 1
+    assert bip.optimal_value == 6
 
 
 def test_solving_nontrivial_four_var_problem():
@@ -81,6 +85,7 @@ def test_solving_nontrivial_four_var_problem():
     bip.solve()
     values = [v.value for v in bip.variables]
     assert values == [0, 1, 1, 1]
+    assert bip.optimal_value == 21
 
 
 def test_solving_nontrivial_eight_var_problem():
@@ -92,3 +97,4 @@ def test_solving_nontrivial_eight_var_problem():
     bip.solve()
     values = [v.value for v in bip.variables]
     assert values == [1, 0, 1, 1, 1, 0, 1, 1]
+    assert bip.optimal_value == 900

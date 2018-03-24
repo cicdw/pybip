@@ -55,4 +55,7 @@ class Knapsack(object):
                                   self.capacity)
         sol_idx = _knapsack_solution(lookup, self.weights)
         for idx, var in enumerate(self.variables):
-            var.set_value(1 if (idx + 1) in sol_idx else 0)
+            is_on = (idx + 1) in sol_idx
+            var.set_value(1 if is_on else 0)
+
+        self.optimal_value = sum([v * x for v, x in zip(self.values, self.variables)])
