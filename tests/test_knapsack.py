@@ -12,14 +12,14 @@ def test_knapsack_initializes_with_capacity():
 
 def test_adding_variables():
     bip = Knapsack(capacity=3)
-    bip.addVar(Var(),
+    bip.add_var(Var(),
                weight=1,
                value=1)
 
 
 def test_solving_trivial_problem():
     bip = Knapsack(capacity=3)
-    bip.addVar(Var(),
+    bip.add_var(Var(),
                weight=1,
                value=1)
     bip.solve()
@@ -28,10 +28,10 @@ def test_solving_trivial_problem():
 
 def test_solving_trivial_two_var_problem():
     bip = Knapsack(capacity=3)
-    bip.addVar(Var(),
+    bip.add_var(Var(),
                weight=1,
                value=1)
-    bip.addVar(Var(),
+    bip.add_var(Var(),
                weight=1,
                value=1)
     bip.solve()
@@ -40,10 +40,10 @@ def test_solving_trivial_two_var_problem():
 
 def test_solving_nontrivial_two_var_problem():
     bip = Knapsack(capacity=3)
-    bip.addVar(Var(),
+    bip.add_var(Var(),
                weight=4,
                value=5)
-    bip.addVar(Var(),
+    bip.add_var(Var(),
                weight=1,
                value=1)
     bip.solve()
@@ -53,10 +53,10 @@ def test_solving_nontrivial_two_var_problem():
 
 def test_solving_two_var_problem_with_negative_weights():
     bip = Knapsack(capacity=3)
-    bip.addVar(Var(),
+    bip.add_var(Var(),
                weight=-4,
                value=5)
-    bip.addVar(Var(),
+    bip.add_var(Var(),
                weight=1,
                value=1)
     bip.solve()
@@ -66,18 +66,29 @@ def test_solving_two_var_problem_with_negative_weights():
 
 def test_solving_nontrivial_four_var_problem():
     bip = Knapsack(capacity=14)
-    bip.addVar(Var(),
+    bip.add_var(Var(),
                weight=5,
                value=8)
-    bip.addVar(Var(),
+    bip.add_var(Var(),
                weight=7,
                value=11)
-    bip.addVar(Var(),
+    bip.add_var(Var(),
                weight=4,
                value=6)
-    bip.addVar(Var(),
+    bip.add_var(Var(),
                weight=3,
                value=4)
     bip.solve()
     values = [v.value for v in bip.variables]
     assert values == [0, 1, 1, 1]
+
+
+def test_solving_nontrivial_eight_var_problem():
+    bip = Knapsack(capacity=104)
+    for weight, value in zip([25, 35, 45, 5, 25, 3, 2, 2],
+                             [350, 400, 450, 20, 70, 8, 5, 5]):
+        bip.add_var(Var(), weight=weight, value=value)
+
+    bip.solve()
+    values = [v.value for v in bip.variables]
+    assert values == [1, 0, 1, 1, 1, 0, 1, 1]

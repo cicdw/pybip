@@ -7,7 +7,7 @@ def _knapsack_table(weights, values, capacity):
     strictly positive integers.
 
     Returns a table satisfying table[i, j] = max possible value
-    of first i items under the weight constraint total(weight) <= j + 1
+    of first i items under the weight constraint total(weight) <= j
     """
     n = len(values)
     lookup = np.zeros((n + 1, capacity + 1))
@@ -44,7 +44,7 @@ class Knapsack(object):
         self.weights = []
         self.values = []
 
-    def addVar(self, variable, weight, value):
+    def add_var(self, variable, weight, value):
         self.variables.append(variable if weight >= 0 else 1 - variable)
         self.weights.append(weight if weight >= 0 else -weight)
         self.values.append(value)
