@@ -1,0 +1,11 @@
+name: pybip
+
+dependencies:
+    - dask
+    - ipython
+    - jupyter
+    - numpy
+    - pandas
+    - pip
+    - pytest
+    - python=3.6
