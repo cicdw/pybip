@@ -50,3 +50,10 @@ def test_addition_after_value_isset():
     x.set_value(0)
     assert 3 + x == 3
     assert x + 3 == 3
+
+
+def test_multiplication_and_subtraction_together():
+    x = Var()
+    y = 1 - x
+    y.set_value(1)
+    assert 3 * y == 3

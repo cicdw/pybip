@@ -1,48 +1,50 @@
 class Var(object):
-    __slots__ = ('name', 'transform', 'value')
+    __slots__ = ('name', 'parent', 'value')
 
-    def __init__(self, name=None):
+    def __init__(self, name=None, parent=None):
         self.name = name or id(self)
         self.value = None
+        self.parent = parent
 
     def set_value(self, val):
-        if hasattr(self, 'transform'):
-            self.value = self.transform(val)
-        else:
-            self.value = val
+        if self.parent is not None:
+            v, transform = self.parent
+            v.set_value(transform(val))
+
+        self.value = val
 
     def __add__(self, other):
         if self.value is not None:
             return self.value + other
-        self.transform = lambda x: x + other
-        return self
+        transform = lambda x: x + other
+        return Var(parent=(self, transform))
 
     def __radd__(self, other):
         if self.value is not None:
             return self.value + other
-        self.transform = lambda x: x + other
-        return self
+        transform = lambda x: x + other
+        return Var(parent=(self, transform))
 
     def __mul__(self, other):
         if self.value is not None:
             return self.value * other
-        self.transform = lambda x: x / other
-        return self
+        transform = lambda x: x / other
+        return Var(parent=(self, transform))
 
     def __rmul__(self, other):
         if self.value is not None:
             return self.value * other
-        self.transform = lambda x: x / other
-        return self
+        transform = lambda x: x / other
+        return Var(parent=(self, transform))
 
     def __rsub__(self, other):
         if self.value is not None:
             return other - self.value
-        self.transform = lambda x: other - x
-        return self
+        transform = lambda x: other - x
+        return Var(parent=(self, transform))
 
     def __sub__(self, other):
         if self.value is not None:
             return self.value - other
-        self.transform = lambda x: x + other
-        return self
+        transform = lambda x: x + other
+        return Var(parent=(self, transform))

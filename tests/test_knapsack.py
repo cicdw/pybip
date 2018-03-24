@@ -56,15 +56,16 @@ def test_solving_nontrivial_two_var_problem():
 
 def test_solving_two_var_problem_with_negative_weights():
     bip = Knapsack(capacity=3)
-    bip.add_var(Var(),
+    x, y = Var(), Var()
+    bip.add_var(x,
                weight=-4,
                value=5)
-    bip.add_var(Var(),
+    bip.add_var(y,
                weight=1,
                value=1)
     bip.solve()
-    assert bip.variables[0].value == 1
-    assert bip.variables[1].value == 1
+    assert x.value == 1
+    assert y.value == 1
     assert bip.optimal_value == 6
 
 
@@ -105,14 +106,15 @@ def test_knapsack_with_negative_values():
     bip.add_var(Var(), weight=4, value=-2)
     bip.add_var(Var(), weight=20, value=5)
     bip.solve()
-    assert [v.value for v in bip.variables] == [1, 0]
-    assert bip.optimal_value == -2
+    assert [v.value for v in bip.variables] == [0, 0]
+    assert bip.optimal_value == 0
 
 
 def test_knapsack_with_negative_values_neg_weights():
     bip = Knapsack(capacity=10)
-    bip.add_var(Var(), weight=15, value=-2)
-    bip.add_var(Var(), weight=-5, value=5)
+    x, y = Var(), Var()
+    bip.add_var(x, weight=15, value=-2)
+    bip.add_var(y, weight=-5, value=5)
     bip.solve()
-    assert [v.value for v in bip.variables] == [1, 1]
-    assert bip.optimal_value == 3
+    assert [x.value, y.value] == [0, 1]
+    assert bip.optimal_value == 5
