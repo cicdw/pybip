@@ -1,4 +1,19 @@
-class Var(object):
+class VariableContainer(object):
+    __slots__ = ('name', 'parents')
+
+    def get_ancestors(self):
+        if self.parents is not None:
+            out = []
+            for parent in self.parents:
+                var = parent[0]
+                out.append(var)
+                out.extend(var.get_ancestors())
+            return out
+        else:
+            return []
+
+
+class Var(VariableContainer):
     __slots__ = ('name', 'parents', 'value')
 
     def __init__(self, name=None, parents=None):
@@ -13,17 +28,6 @@ class Var(object):
                 v.set_value(transform(val))
 
         self.value = val
-
-    def get_ancestors(self):
-        if self.parents is not None:
-            out = []
-            for parent in self.parents:
-                var = parent[0]
-                out.append(var)
-                out.extend(var.get_ancestors())
-            return out
-        else:
-            return []
 
     def _handle_other(self, other, transform):
         parents = [(self, transform)]
@@ -83,10 +87,10 @@ class Var(object):
         return Constraint(self, op='eq', rhs=other)
 
 
-class Constraint(Var):
+class Constraint(VariableContainer):
 
     def __init__(self, exp, op, rhs):
-        super().__init__(self, parents=[(exp,)])
+        self.parents = [(exp,)]
         self.exp = exp
         self.op = op
         self.rhs = rhs
