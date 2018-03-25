@@ -96,4 +96,4 @@ class InequalityConstrained(object):
         for var, weight, value in zip(variables, self.constraint.exp.coefs, self.objective.coefs):
             bip.add_var(var, weight, value)
         bip.solve()
-        self.optimal_value = bip.optimal_value
+        self.optimal_value = bip.optimal_value + self.objective.offset

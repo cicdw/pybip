@@ -1,3 +1,6 @@
+import numpy as np
+
+
 class Var(object):
     __slots__ = ('name', 'value')
 
@@ -138,6 +141,9 @@ class LinearExpression(object):
 class Constraint(object):
 
     def __init__(self, exp, op, rhs):
+        if not np.isclose(exp.offset, 0):
+            rhs += -exp.offset
+            exp.offset = 0
         self.exp = exp
         self.op = op
         self.rhs = rhs
