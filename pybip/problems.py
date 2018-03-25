@@ -72,4 +72,39 @@ class Knapsack(object):
             is_on = (idx + 1) in sol_idx
             var.set_value(1 if is_on else 0)
 
-        self.optimal_value = sum([v * x for v, x in zip(self.values, self.variables)]) + self.offset
+        self.optimal_value = sum([v * x.value for v, x in zip(self.values, self.variables)]) + self.offset
+
+
+class EqualityConstrained(object):
+    pass
+
+
+class InequalityConstrained(object):
+
+    def __init__(self, objective=None, constraint=None):
+        self.variables = []
+        self.objective = objective
+        self.constraint = constraint
+
+    def solve(self):
+        pass
+
+    @property
+    def constraint(self):
+        return self._constr
+
+    @constraint.setter
+    def constraint(self, constr):
+        vars_needed = constr.get_ancestors()
+        self.variables.extend(vars_needed)
+        self._constr = constr
+
+    @property
+    def objective(self):
+        return self._obj
+
+    @objective.setter
+    def objective(self, obj):
+        vars_needed = obj.get_ancestors()
+        self.variables.extend(vars_needed)
+        self._obj = obj
