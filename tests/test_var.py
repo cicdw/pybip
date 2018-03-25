@@ -51,12 +51,45 @@ def test_get_terms():
     assert Var() not in family
 
 
-@pytest.mark.skip
+def test_add_same_terms():
+    x = Var()
+    y = 3 * x + 5 * x - 3
+    assert len(y.terms) == 1
+    assert y.coefs == [8]
+    assert y.offset == -3
+
+
+def test_inversion():
+    x = Var()
+    y = 3 * x
+    y.set_value(9)
+    np.testing.assert_almost_equal(x.value, 3)
+
+    x = Var()
+    y = 3 * x + 6
+    y.set_value(9)
+    np.testing.assert_almost_equal(x.value, 1)
+
+    x, z = Var(), Var()
+    y = 3 * x + z
+    with pytest.raises(ValueError):
+        y.set_value(9)
+
+
+def test_terms():
+    x, y = Var(), Var()
+    exp = x + y
+    assert x in exp.terms
+    assert y in exp.terms
+    assert Var() not in exp.terms
+
+
 @pytest.mark.parametrize("op", [oper.le, oper.lt, oper.ge, oper.gt, oper.eq],
                          ids=['le', 'lt', 'ge', 'gt', 'eq'])
 def test_constraint_ancestors(op):
     x, y = Var(), Var()
     constr = op(x + y, 1)
-    variables = constr.get_ancestors()
-    assert any([v is y for v in variables])
-    assert any([v is x for v in variables])
+    variables = constr.get_variables()
+    assert x in variables
+    assert y in variables
+    assert Var() not in variables

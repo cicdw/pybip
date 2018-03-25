@@ -82,29 +82,18 @@ class EqualityConstrained(object):
 class InequalityConstrained(object):
 
     def __init__(self, objective=None, constraint=None):
-        self.variables = []
         self.objective = objective
-        self.constraint = constraint
+        if constraint.op not in ('le', 'ge'):
+            raise ValueError("Current only <= and >= constraints are supported.")
+        if constraint.op == 'ge':
+            self.constraint = -constraint
+        else:
+            self.constraint = constraint
 
     def solve(self):
-        pass
-
-    @property
-    def constraint(self):
-        return self._constr
-
-    @constraint.setter
-    def constraint(self, constr):
-        vars_needed = constr.get_ancestors()
-        self.variables.extend(vars_needed)
-        self._constr = constr
-
-    @property
-    def objective(self):
-        return self._obj
-
-    @objective.setter
-    def objective(self, obj):
-        vars_needed = obj.get_ancestors()
-        self.variables.extend(vars_needed)
-        self._obj = obj
+        bip = Knapsack(capacity = self.constraint.rhs)
+        variables = self.constraint.get_variables()
+        for var, weight, value in zip(variables, self.constraint.exp.coefs, self.objective.coefs):
+            bip.add_var(var, weight, value)
+        bip.solve()
+        self.optimal_value = bip.optimal_value

@@ -1,39 +1,12 @@
-class VariableContainer(object):
-    __slots__ = ('name', 'parents')
+class Var(object):
+    __slots__ = ('name', 'value')
 
-    def get_ancestors(self):
-        if self.parents is not None:
-            out = []
-            for parent in self.parents:
-                var = parent[0]
-                out.append(var)
-                out.extend(var.get_ancestors())
-            return out
-        else:
-            return []
-
-
-class Var(VariableContainer):
-    __slots__ = ('name', 'parents', 'value')
-
-    def __init__(self, name=None, parents=None):
+    def __init__(self, name=None):
         self.name = name or id(self)
         self.value = None
-        self.parents = parents
 
     def set_value(self, val):
-        if self.parents is not None:
-            for parent in self.parents:
-                v, transform = parent
-                v.set_value(transform(val))
-
         self.value = val
-
-    def _handle_other(self, other, transform):
-        parents = [(self, transform)]
-        if isinstance(other, Var):
-            parents.append((other, transform))
-        return Var(parents=parents)
 
     def __add__(self, other):
         if isinstance(other, LinearExpression):
@@ -91,7 +64,7 @@ class LinearExpression(object):
     @offset.setter
     def offset(self, other):
         if isinstance(other, Var):
-            self.add_term(Var, coef=1)
+            self.add_term(other, coef=1)
             self._offset = 0
         else:
             self._offset = other
@@ -146,11 +119,35 @@ class LinearExpression(object):
         self.offset = -self.offset
         return self
 
+    def __lt__(self, other):
+        return Constraint(self, 'lt', other)
 
-class Constraint(VariableContainer):
+    def __le__(self, other):
+        return Constraint(self, 'le', other)
+
+    def __gt__(self, other):
+        return Constraint(self, 'gt', other)
+
+    def __ge__(self, other):
+        return Constraint(self, 'ge', other)
+
+    def __eq__(self, other):
+        return Constraint(self, 'eq', other)
+
+
+class Constraint(object):
 
     def __init__(self, exp, op, rhs):
-        self.parents = [(exp,)]
         self.exp = exp
         self.op = op
         self.rhs = rhs
+
+    def get_variables(self):
+        return self.exp.terms
+
+    def __neg__(self):
+        reverse = {'le': 'ge',
+                   'lt': 'gt',
+                   'ge': 'le',
+                   'gt': 'lt'}
+        return Constraint(-self.exp, reverse[self.op], -self.rhs)
