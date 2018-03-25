@@ -70,6 +70,18 @@ class Var(object):
     def __le__(self, other):
         return Constraint(self, op='leq', rhs=other)
 
+    def __lt__(self, other):
+        return Constraint(self, op='lt', rhs=other)
+
+    def __ge__(self, other):
+        return Constraint(self, op='ge', rhs=other)
+
+    def __gt__(self, other):
+        return Constraint(self, op='gt', rhs=other)
+
+    def __eq__(self, other):
+        return Constraint(self, op='eq', rhs=other)
+
 
 class Constraint(Var):
 

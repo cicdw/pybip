@@ -1,3 +1,5 @@
+import operator as oper
+import pytest
 from pybip.variables import Var
 
 
@@ -78,9 +80,11 @@ def test_get_ancestors():
     assert x in family
 
 
-def test_constraint_ancestors():
+@pytest.mark.parametrize("op", [oper.le, oper.lt, oper.ge, oper.gt, oper.eq],
+                         ids=['le', 'lt', 'ge', 'gt', 'eq'])
+def test_constraint_ancestors(op):
     x, y = Var(), Var()
-    constr = x + y <= 1
+    constr = op(x + y, 1)
     variables = constr.get_ancestors()
     assert y in variables
     assert x in variables
