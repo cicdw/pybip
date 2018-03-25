@@ -97,3 +97,20 @@ class InequalityConstrained(object):
             bip.add_var(var, weight, value)
         bip.solve()
         self.optimal_value = bip.optimal_value + self.objective.offset
+
+
+class BIP(object):
+    def _check_constraint(self, constr):
+        if constr.op not in ('le', 'ge'):
+            raise ValueError("Current only <= and >= constrs are supported.")
+        if constr.op == 'ge':
+            return -constr
+        else:
+            return constr
+
+    def __init__(self, objective=None, constraints=None):
+        self.objective = objective
+        valid_constrs = []
+        for constraint in constraints:
+            valid_constrs.append(self._check_constraint(constraint))
+        self.constraints = valid_constrs
