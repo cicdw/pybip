@@ -76,3 +76,11 @@ def test_get_ancestors():
     family = z.get_ancestors()
     assert y in family
     assert x in family
+
+
+def test_constraint_ancestors():
+    x, y = Var(), Var()
+    constr = x + y <= 1
+    variables = constr.get_ancestors()
+    assert y in variables
+    assert x in variables
