@@ -67,3 +67,12 @@ def test_downstream_variable_setting():
     assert z.value == 10
     assert y.value == 6
     assert x.value == -0.5
+
+
+def test_get_ancestors():
+    x = Var()
+    y = 5 - 2 * x
+    z = y + 4
+    family = z.get_ancestors()
+    assert y in family
+    assert x in family

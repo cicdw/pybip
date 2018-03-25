@@ -13,6 +13,13 @@ class Var(object):
 
         self.value = val
 
+    def get_ancestors(self):
+        if self.parent is not None:
+            parent = self.parent[0]
+            return [parent] + parent.get_ancestors()
+        else:
+            return []
+
     def __add__(self, other):
         if self.value is not None:
             return self.value + other
