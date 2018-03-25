@@ -72,4 +72,28 @@ class Knapsack(object):
             is_on = (idx + 1) in sol_idx
             var.set_value(1 if is_on else 0)
 
-        self.optimal_value = sum([v * x for v, x in zip(self.values, self.variables)]) + self.offset
+        self.optimal_value = sum([v * x.value for v, x in zip(self.values, self.variables)]) + self.offset
+
+
+class EqualityConstrained(object):
+    pass
+
+
+class InequalityConstrained(object):
+
+    def __init__(self, objective=None, constraint=None):
+        self.objective = objective
+        if constraint.op not in ('le', 'ge'):
+            raise ValueError("Current only <= and >= constraints are supported.")
+        if constraint.op == 'ge':
+            self.constraint = -constraint
+        else:
+            self.constraint = constraint
+
+    def solve(self):
+        bip = Knapsack(capacity = self.constraint.rhs)
+        variables = self.constraint.get_variables()
+        for var, weight, value in zip(variables, self.constraint.exp.coefs, self.objective.coefs):
+            bip.add_var(var, weight, value)
+        bip.solve()
+        self.optimal_value = bip.optimal_value + self.objective.offset
